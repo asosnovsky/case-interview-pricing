@@ -1,0 +1,372 @@
+---
+title: "Pricing Solutions - Case Study"
+output: 
+  html_document: 
+    df_print: kable
+    highlight: kate
+---
+
+```{r include=FALSE}
+rm(list=ls())
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(ggplot2)
+
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+
+source("./scripts/funcs.R")
+source("./scripts/plots.R")
+
+datasets <- load_dataset_folder('data/datasets', col_types=cols(
+  mstrprodid = col_integer(),
+  year = col_integer(),
+  quarter = col_integer(),
+  week_num = col_integer(),
+  qty = col_integer(),
+  price = col_double(),
+  store = col_integer(),
+  qty_bs = col_double(),
+  dprice = col_double(),
+  dqty = col_double(),
+  dqty_bs = col_double(),
+  dstore = col_double(),
+  elasticity = col_double(),
+  cluster_name = col_character(),
+  cor_cluster_d = col_integer()
+))
+
+joined_dataset <- read_csv("data/joined_dataset.csv", col_types = cols(
+  .default = col_double(),
+  pid = col_integer(),
+  year = col_integer(),
+  quarter = col_integer(),
+  week_num = col_integer(),
+  price_tier_all = col_character(),
+  cor_cluster_all = col_integer(),
+  qty_all = col_integer(),
+  store_all = col_integer(),
+  price_tier_loyalty = col_character(),
+  cor_cluster_loyalty = col_integer(),
+  qty_loyalty = col_integer(),
+  store_loyalty = col_integer(),
+  price_tier_non_loyalty = col_character(),
+  cor_cluster_non_loyalty = col_integer(),
+  qty_non_loyalty = col_integer(),
+  store_non_loyalty = col_integer()
+))
+set.seed(2019)
+```
+
+# Overview of the Data
+
+## General Metrics
+
+```{r}
+apply_to_list(datasets, function(x, n) x %>% summarise(
+  `Type`=n,
+  `Number of Stores`=max(store, na.rm=T), 
+  `Number of Products`=length(unique(mstrprodid)),
+  `Start Period`=min(year), `End Period`=max(year),
+)) %>% arrange(desc(Type))
+```
+
+## Summary of Price Data
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+apply_to_list(datasets, function(x,n) {
+  x %>% select(year, week_num, mstrprodid, price) %>% 
+    setNames(c("year", "week_num", "pid", n))
+}, inner_join) %>% 
+  gather(type, value, -c(year, week_num, pid)) -> 
+  psummary
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+psummary %>% 
+  ggplot(aes(
+    value,
+    fill=type
+  )) +
+  geom_histogram(alpha=0.5, bins = 50) +
+  facet_grid(year~., scales = "free_y")+
+  labs(x="$ Price",y="")+
+  ggtitle("Price Distribution")
+
+```
+
+```{r}
+psummary %>% 
+  group_by(year, type) %>% 
+  summarise(
+    Min=min(value, na.rm = T),
+    Mean=round(mean(value, na.rm = T), 2), 
+    Max=max(value, na.rm = T),
+    `Na's`=sum(is.na(value)),
+    N=n()
+  )
+```
+
+```{r}
+psummary %>% 
+  group_by(type, pid, year) %>% 
+  summarise(
+    sd = replace_na(sd(value),0)
+  ) %>% 
+  group_by(type, sd==0, year) %>% 
+  summarise(
+    pids=length(unique(pid))
+  ) %>% group_by(year, type) %>% 
+  spread(`sd == 0`, pids)
+```
+
+```{r}
+psummary %>% 
+  group_by(type, pid, year) %>% 
+  summarise(
+    price = round(mean(value),2),
+    sd = replace_na(sd(value),0)
+  ) %>% 
+  filter(sd==0) %>% 
+  ggplot() +
+  geom_histogram(aes(
+    price, fill=type
+  ), bins=10, alpha=0.75) +
+  facet_grid(year~., scales='free_y')
+```
+
+## Summary of Quantity
+
+```{r}
+apply_to_list(datasets, function(x,n) {
+  x %>% select(year, week_num, mstrprodid, qty) %>% 
+    setNames(c("year", "week_num", "pid", n))
+}, inner_join) %>% 
+  gather(type, value, -c(year, week_num, pid)) -> 
+  qsummary
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+qsummary %>% 
+  ggplot(aes(
+    value,
+    fill=type
+  )) +
+  geom_histogram(alpha=0.5, bins = 50) +
+  facet_grid(year~., scales = "free_y")+
+  labs(x="$ Price",y="")+
+  ggtitle("Price Distribution")
+```
+
+```{r}
+qsummary %>% 
+  group_by(year, type) %>% 
+  summarise(
+    Min=min(value, na.rm = T),
+    Mean=round(mean(value, na.rm = T), 2), 
+    Max=max(value, na.rm = T),
+    `Na's`=sum(is.na(value)),
+    N=n()
+  ) 
+```
+
+The following had negative units sold
+
+```{r}
+qsummary %>% filter(value<0)
+qsummary %>% filter(pid==40886) %>%
+  group_by(type) %>% 
+  summarise(qty=sum(value,na.rm=T)) %>% 
+  spread(type, qty) %>% 
+  mutate(`CHECK=loyalty+non_loyalty`=loyalty+non_loyalty) %>% 
+  gather(type, qty) %>% arrange(type) 
+```
+
+
+
+
+## Average Quantity by Store
+
+```{r}
+apply_to_list(datasets, function(x,n) {
+  x %>% select(year, week_num, mstrprodid, qty_bs) %>% 
+    setNames(c("year", "week_num", "pid", n))
+}, inner_join) %>% 
+  gather(type, value, -c(year, week_num, pid)) -> 
+  qsummary
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+qsummary %>% 
+  ggplot(aes(
+    value,
+    fill=type
+  )) +
+  geom_histogram(alpha=0.5, bins = 50) +
+  facet_grid(year~., scales = "free_y")+
+  labs(x="$ Price",y="")+
+  ggtitle("Price Distribution")
+```
+
+```{r}
+qsummary %>% 
+  group_by(year, type) %>% 
+  summarise(
+    Min=min(value, na.rm = T),
+    Mean=round(mean(value, na.rm = T), 2), 
+    Max=max(value, na.rm = T),
+    `Na's`=sum(is.na(value)),
+    N=n()
+  )
+```
+
+# Clustering: Group Generation
+
+## Correlation Clustering
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+datasets$all %>% mutate(period = year + (week_num-1)/53) %>% 
+  arrange(mstrprodid, period) %>% 
+  select(mstrprodid, period, qty_bs) %>% 
+  group_by(period) %>% 
+  spread(mstrprodid, qty_bs) %>% ungroup %>% select(-period) %>% 
+  cor %>% 
+  as.data.frame %>% 
+  rownames_to_column('var1') %>%
+  gather(var2, value, -c(var1)) %>% 
+  mutate(
+    value = replace_na(value, 0)
+  ) ->
+  cor_table
+
+cor_table %>% 
+  group_by(var1) %>% spread(var2, value) %>% 
+  column_to_rownames('var1') %>% 
+  as.matrix %>% as.dist -> 
+  cor_dist_matrix
+```
+
+```{r}
+cor_table %>% ggplot(aes(x=var1,y=var2,fill=value)) + geom_tile() +
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),axis.ticks.y=element_blank()) +
+  ggtitle("Correlation between Products", 
+          "(using quantity sold by store)") +
+  labs(x="Product ID",y="Product ID")
+```
+
+```{r}
+hclst = hclust(cor_dist_matrix, method = 'complete')
+plot(hclst, hang = -1, cex = 0.6, xlab='', sub='')
+abline(h=0.8, col=4)
+```
+
+```{r}
+cutree(hclst, 7) %>% {
+  tibble(
+    mstrprodid=names(.),
+    cor_cluster=as.numeric(.)
+  )
+} %>% group_by(cor_cluster) %>% 
+  summarise(N=n())
+```
+
+
+```{r}
+datasets$all %>% 
+  group_by(cor_cluster_d) %>% 
+  summarise(
+    `Revenue`=sum(price*qty),
+    `Number of Products` = length(unique(mstrprodid))
+  ) %>% 
+  mutate(
+    `% of Revenue` = scales::percent(Revenue/sum(Revenue)),
+    Revenue = scales::dollar(Revenue)
+  )
+```
+
+## Kmeans Clustering
+
+```{r}
+datasets$all %>% 
+  filter(!is.na(price)) %>% 
+  group_by(year) %>% 
+  mutate(
+    cluster = kmeans(
+      tibble(price), 3
+    )$cluster
+  ) %>% 
+  group_by(cluster, year) %>% 
+  summarise(
+    N=n(), `Lower Limit`=min(price),
+    `Center`=mean(price),
+    `Upper Limit`=max(price)
+  ) %>% arrange(year, `Lower Limit`) %>% 
+  group_by(year) %>% 
+  mutate(
+    price_tier = c("Low Priced", "Medium Priced", "High Priced")
+  ) -> price_tiers
+price_tiers %>% ggplot(aes(
+  x=year, color=price_tier, fill=price_tier
+))+
+  geom_ribbon(aes(ymax=`Upper Limit`, ymin=`Lower Limit`), alpha=0.25) +
+  geom_line(aes(y=Center))
+```
+
+
+```{r}
+datasets$all %>% 
+  group_by(cluster_name) %>% 
+  summarise(
+    `Revenue`=sum(price*qty),
+    `Number of Products` = length(unique(mstrprodid))
+  ) %>% 
+  mutate(
+    `% of Revenue` = scales::percent(Revenue/sum(Revenue)),
+    Revenue = scales::dollar(Revenue)
+  )
+```
+
+
+# Predictive Models
+
+## Model 1: Lagged Price and Quantity 
+
+```{r}
+joined_dataset %>% group_by(pid) %>%
+  arrange(pid, year, week_num) %>% 
+  mutate(
+    last_dqty_bs_all = lag(dqty_bs_all),
+    last_price_all = lag(price_all)
+  ) %>% ungroup() %>% {lm(
+    dqty_bs_all~week_num*last_dqty_bs_all+last_price_all+price_all-1,
+    data=.
+  )} -> m1
+
+broom::glance(m1)
+broom::tidy(m1) %>% mutate(
+  significant=(p.value<0.1)+(p.value<0.05)+(p.value<0.01)+(p.value<0.005)
+)
+```
+
+## Model 2: Lagged Price and Quality, and clusters 
+
+```{r}
+joined_dataset %>% group_by(pid) %>%
+  arrange(pid, year, week_num) %>% 
+  mutate(
+    last_dqty_bs_all = lag(dqty_bs_all),
+    last_price_all = lag(price_all),
+    cor_cluster_all=as.character(cor_cluster_all),
+  ) %>% ungroup() %>% {lm(
+    dqty_bs_all~week_num+last_price_all+
+        last_dqty_bs_all+last_price_all+price_all+
+        price_tier_all+cor_cluster_all,
+    data=.
+  )} -> m2
+
+broom::glance(m2)
+broom::tidy(m2) %>% mutate(
+  significant=(p.value<0.1)+(p.value<0.05)+(p.value<0.01)+(p.value<0.005)
+) 
+```
