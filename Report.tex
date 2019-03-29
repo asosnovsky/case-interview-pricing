@@ -1,0 +1,670 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Pricing Solutions - Case Study},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Pricing Solutions - Case Study}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\section{Overview of the Data}\label{overview-of-the-data}
+
+\subsection{General Metrics}\label{general-metrics}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{apply_to_list}\NormalTok{(datasets, }\ControlFlowTok{function}\NormalTok{(x, n) x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}
+  \StringTok{`}\DataTypeTok{Type}\StringTok{`}\NormalTok{=n,}
+  \StringTok{`}\DataTypeTok{Number of Stores}\StringTok{`}\NormalTok{=}\KeywordTok{max}\NormalTok{(store, }\DataTypeTok{na.rm=}\NormalTok{T), }
+  \StringTok{`}\DataTypeTok{Number of Products}\StringTok{`}\NormalTok{=}\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(mstrprodid)),}
+  \StringTok{`}\DataTypeTok{Start Period}\StringTok{`}\NormalTok{=}\KeywordTok{min}\NormalTok{(year), }\StringTok{`}\DataTypeTok{End Period}\StringTok{`}\NormalTok{=}\KeywordTok{max}\NormalTok{(year),}
+\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(Type))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 5
+##   Type     `Number of Store~ `Number of Produ~ `Start Period` `End Period`
+##   <chr>                <int>             <int>          <dbl>        <dbl>
+## 1 non_loy~               511               253           2012         2015
+## 2 loyalty                511               248           2012         2015
+## 3 all                    511               255           2012         2015
+\end{verbatim}
+
+\subsection{Summary of Price Data}\label{summary-of-price-data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{apply_to_list}\NormalTok{(datasets, }\ControlFlowTok{function}\NormalTok{(x,n) \{}
+\NormalTok{  x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(year, week_num, mstrprodid, price) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{setNames}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"week_num"}\NormalTok{, }\StringTok{"pid"}\NormalTok{, n))}
+\NormalTok{\}, inner_join) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(type, value, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(year, week_num, pid)) ->}\StringTok{ }
+\StringTok{  }\NormalTok{psummary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}
+\NormalTok{    value,}
+    \DataTypeTok{fill=}\NormalTok{type}
+\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.5}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{50}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(year}\OperatorTok{~}\NormalTok{., }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"$ Price"}\NormalTok{,}\DataTypeTok{y=}\StringTok{""}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Price Distribution"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(year, type) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{Min=}\KeywordTok{min}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \DataTypeTok{Mean=}\KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T), }\DecValTok{2}\NormalTok{), }
+    \DataTypeTok{Max=}\KeywordTok{max}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \StringTok{`}\DataTypeTok{Na's}\StringTok{`}\NormalTok{=}\KeywordTok{sum}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(value)),}
+    \DataTypeTok{N=}\KeywordTok{n}\NormalTok{()}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 12 x 7
+## # Groups:   year [?]
+##     year type          Min  Mean   Max `Na's`     N
+##    <int> <chr>       <dbl> <dbl> <dbl>  <int> <int>
+##  1  2012 all         0.23   1.5   1.69      0  1447
+##  2  2012 loyalty     0.12   1.48  1.69      0  1447
+##  3  2012 non_loyalty 0.990  1.51  1.69      0  1447
+##  4  2013 all         0.420  1.48  1.69      0  5570
+##  5  2013 loyalty     0.19   1.45  1.69      0  5570
+##  6  2013 non_loyalty 0.75   1.5   1.69      0  5570
+##  7  2014 all         0      1.46  1.91      0  8050
+##  8  2014 loyalty     0      1.44  1.99      0  8050
+##  9  2014 non_loyalty 0      1.47  1.99      0  8050
+## 10  2015 all         0      1.46  1.89      0  6604
+## 11  2015 loyalty     0      1.41  1.89      0  6604
+## 12  2015 non_loyalty 0      1.49  1.89      0  6604
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(type, pid, year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{sd =} \KeywordTok{replace_na}\NormalTok{(}\KeywordTok{sd}\NormalTok{(value),}\DecValTok{0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(type, sd}\OperatorTok{==}\DecValTok{0}\NormalTok{, year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{pids=}\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(pid))}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(year, type) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{spread}\NormalTok{(}\StringTok{`}\DataTypeTok{sd == 0}\StringTok{`}\NormalTok{, pids)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 12 x 4
+## # Groups:   year, type [12]
+##    type         year `FALSE` `TRUE`
+##    <chr>       <int>   <int>  <int>
+##  1 all          2012      83     25
+##  2 all          2013     104     33
+##  3 all          2014     173     20
+##  4 all          2015     194     13
+##  5 loyalty      2012      85     23
+##  6 loyalty      2013     106     31
+##  7 loyalty      2014     175     18
+##  8 loyalty      2015     193     14
+##  9 non_loyalty  2012      81     27
+## 10 non_loyalty  2013     103     34
+## 11 non_loyalty  2014     171     22
+## 12 non_loyalty  2015     180     27
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(type, pid, year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{price =} \KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(value),}\DecValTok{2}\NormalTok{),}
+    \DataTypeTok{sd =} \KeywordTok{replace_na}\NormalTok{(}\KeywordTok{sd}\NormalTok{(value),}\DecValTok{0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(sd}\OperatorTok{==}\DecValTok{0}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}
+\NormalTok{    price, }\DataTypeTok{fill=}\NormalTok{type}
+\NormalTok{  ), }\DataTypeTok{bins=}\DecValTok{10}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.75}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(year}\OperatorTok{~}\NormalTok{., }\DataTypeTok{scales=}\StringTok{'free_y'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\subsection{Summary of Quantity}\label{summary-of-quantity}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{apply_to_list}\NormalTok{(datasets, }\ControlFlowTok{function}\NormalTok{(x,n) \{}
+\NormalTok{  x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(year, week_num, mstrprodid, qty) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{setNames}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"week_num"}\NormalTok{, }\StringTok{"pid"}\NormalTok{, n))}
+\NormalTok{\}, inner_join) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(type, value, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(year, week_num, pid)) ->}\StringTok{ }
+\StringTok{  }\NormalTok{qsummary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}
+\NormalTok{    value,}
+    \DataTypeTok{fill=}\NormalTok{type}
+\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.5}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{50}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(year}\OperatorTok{~}\NormalTok{., }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"$ Price"}\NormalTok{,}\DataTypeTok{y=}\StringTok{""}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Price Distribution"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(year, type) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{Min=}\KeywordTok{min}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \DataTypeTok{Mean=}\KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T), }\DecValTok{2}\NormalTok{), }
+    \DataTypeTok{Max=}\KeywordTok{max}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \StringTok{`}\DataTypeTok{Na's}\StringTok{`}\NormalTok{=}\KeywordTok{sum}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(value)),}
+    \DataTypeTok{N=}\KeywordTok{n}\NormalTok{()}
+\NormalTok{  ) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 12 x 7
+## # Groups:   year [?]
+##     year type          Min  Mean    Max `Na's`     N
+##    <int> <chr>       <int> <dbl>  <int>  <int> <int>
+##  1  2012 all             2 5813. 123485      0  1447
+##  2  2012 loyalty         1 1998.  38811      0  1447
+##  3  2012 non_loyalty     1 3815.  85128      0  1447
+##  4  2013 all             2 6372. 133418      0  5570
+##  5  2013 loyalty         1 2080.  37634      0  5570
+##  6  2013 non_loyalty     1 4293.  95784      0  5570
+##  7  2014 all             0 4900. 135707      0  8050
+##  8  2014 loyalty         1 1643.  40618      0  8050
+##  9  2014 non_loyalty    -1 3258.  95089      0  8050
+## 10  2015 all             2 4708. 134403      0  6604
+## 11  2015 loyalty         1 1912.  54670      0  6604
+## 12  2015 non_loyalty     1 2795.  80594      0  6604
+\end{verbatim}
+
+The following had negative units sold
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(value}\OperatorTok{<}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 5
+##    year week_num   pid type        value
+##   <int>    <int> <int> <chr>       <int>
+## 1  2014       45 40886 non_loyalty    -1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(pid}\OperatorTok{==}\DecValTok{40886}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(type) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{qty=}\KeywordTok{sum}\NormalTok{(value,}\DataTypeTok{na.rm=}\NormalTok{T)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{spread}\NormalTok{(type, qty) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\StringTok{`}\DataTypeTok{CHECK=loyalty+non_loyalty}\StringTok{`}\NormalTok{=loyalty}\OperatorTok{+}\NormalTok{non_loyalty) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(type, qty) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(type) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   type                        qty
+##   <chr>                     <int>
+## 1 all                       15784
+## 2 CHECK=loyalty+non_loyalty 15784
+## 3 loyalty                    4089
+## 4 non_loyalty               11695
+\end{verbatim}
+
+\subsection{Average Quantity by Store}\label{average-quantity-by-store}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{apply_to_list}\NormalTok{(datasets, }\ControlFlowTok{function}\NormalTok{(x,n) \{}
+\NormalTok{  x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(year, week_num, mstrprodid, qty_bs) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{setNames}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"week_num"}\NormalTok{, }\StringTok{"pid"}\NormalTok{, n))}
+\NormalTok{\}, inner_join) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(type, value, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(year, week_num, pid)) ->}\StringTok{ }
+\StringTok{  }\NormalTok{qsummary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}
+\NormalTok{    value,}
+    \DataTypeTok{fill=}\NormalTok{type}
+\NormalTok{  )) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.5}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{50}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(year}\OperatorTok{~}\NormalTok{., }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"$ Price"}\NormalTok{,}\DataTypeTok{y=}\StringTok{""}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Price Distribution"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qsummary }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(year, type) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{Min=}\KeywordTok{min}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \DataTypeTok{Mean=}\KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T), }\DecValTok{2}\NormalTok{), }
+    \DataTypeTok{Max=}\KeywordTok{max}\NormalTok{(value, }\DataTypeTok{na.rm =}\NormalTok{ T),}
+    \StringTok{`}\DataTypeTok{Na's}\StringTok{`}\NormalTok{=}\KeywordTok{sum}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(value)),}
+    \DataTypeTok{N=}\KeywordTok{n}\NormalTok{()}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 12 x 7
+## # Groups:   year [?]
+##     year type           Min  Mean   Max `Na's`     N
+##    <int> <chr>        <dbl> <dbl> <dbl>  <int> <int>
+##  1  2012 all          1     18.0  287.       0  1447
+##  2  2012 loyalty      1      6.68  89.8      0  1447
+##  3  2012 non_loyalty  0.333 11.9  198.       0  1447
+##  4  2013 all          1     17.5  293.       0  5570
+##  5  2013 loyalty      1      6.23  84.4      0  5570
+##  6  2013 non_loyalty  1     11.9  210.       0  5570
+##  7  2014 all          0     13.3  284.       0  8050
+##  8  2014 loyalty      1      5.09  85.0      0  8050
+##  9  2014 non_loyalty -1      9.12 200.       0  8050
+## 10  2015 all          1     12.4  270.       0  6604
+## 11  2015 loyalty      1      5.55 109.       0  6604
+## 12  2015 non_loyalty  1      7.69 162.       0  6604
+\end{verbatim}
+
+\section{Clustering: Group
+Generation}\label{clustering-group-generation}
+
+\subsection{Correlation Clustering}\label{correlation-clustering}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cor_table }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{var1,}\DataTypeTok{y=}\NormalTok{var2,}\DataTypeTok{fill=}\NormalTok{value)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_tile}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.ticks.x=}\KeywordTok{element_blank}\NormalTok{(),}
+        \DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Correlation between Products"}\NormalTok{, }
+          \StringTok{"(using quantity sold by store)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Product ID"}\NormalTok{,}\DataTypeTok{y=}\StringTok{"Product ID"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hclst =}\StringTok{ }\KeywordTok{hclust}\NormalTok{(cor_dist_matrix, }\DataTypeTok{method =} \StringTok{'complete'}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(hclst, }\DataTypeTok{hang =} \OperatorTok{-}\DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \FloatTok{0.6}\NormalTok{, }\DataTypeTok{xlab=}\StringTok{''}\NormalTok{, }\DataTypeTok{sub=}\StringTok{''}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\FloatTok{0.8}\NormalTok{, }\DataTypeTok{col=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cutree}\NormalTok{(hclst, }\DecValTok{7}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\NormalTok{\{}
+  \KeywordTok{tibble}\NormalTok{(}
+    \DataTypeTok{mstrprodid=}\KeywordTok{names}\NormalTok{(.),}
+    \DataTypeTok{cor_cluster=}\KeywordTok{as.numeric}\NormalTok{(.)}
+\NormalTok{  )}
+\NormalTok{\} }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(cor_cluster) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{N=}\KeywordTok{n}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 7 x 2
+##   cor_cluster     N
+##         <dbl> <int>
+## 1           1   193
+## 2           2     7
+## 3           3    15
+## 4           4    18
+## 5           5     9
+## 6           6     9
+## 7           7     4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datasets}\OperatorTok{$}\NormalTok{all }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(cor_cluster_d) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \StringTok{`}\DataTypeTok{Revenue}\StringTok{`}\NormalTok{=}\KeywordTok{sum}\NormalTok{(price}\OperatorTok{*}\NormalTok{qty),}
+    \StringTok{`}\DataTypeTok{Number of Products}\StringTok{`}\NormalTok{ =}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(mstrprodid))}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \StringTok{`}\DataTypeTok{% of Revenue}\StringTok{`}\NormalTok{ =}\StringTok{ }\NormalTok{scales}\OperatorTok{::}\KeywordTok{percent}\NormalTok{(Revenue}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(Revenue)),}
+    \DataTypeTok{Revenue =}\NormalTok{ scales}\OperatorTok{::}\KeywordTok{dollar}\NormalTok{(Revenue)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 7 x 4
+##   cor_cluster_d Revenue     `Number of Products` `% of Revenue`
+##           <int> <chr>                      <int> <chr>         
+## 1             1 $34,812,634                  193 20.3%         
+## 2             2 $24,447,862                    7 14.3%         
+## 3             3 $24,796,277                   15 14.5%         
+## 4             4 $27,346,686                   18 16.0%         
+## 5             5 $36,126,531                    9 21.1%         
+## 6             6 $19,616,166                    9 11.5%         
+## 7             7 $4,074,432                     4 2.4%
+\end{verbatim}
+
+\subsection{Kmeans Clustering}\label{kmeans-clustering}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datasets}\OperatorTok{$}\NormalTok{all }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(price)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{cluster =} \KeywordTok{kmeans}\NormalTok{(}
+      \KeywordTok{tibble}\NormalTok{(price), }\DecValTok{3}
+\NormalTok{    )}\OperatorTok{$}\NormalTok{cluster}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(cluster, year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{N=}\KeywordTok{n}\NormalTok{(), }\StringTok{`}\DataTypeTok{Lower Limit}\StringTok{`}\NormalTok{=}\KeywordTok{min}\NormalTok{(price),}
+    \StringTok{`}\DataTypeTok{Center}\StringTok{`}\NormalTok{=}\KeywordTok{mean}\NormalTok{(price),}
+    \StringTok{`}\DataTypeTok{Upper Limit}\StringTok{`}\NormalTok{=}\KeywordTok{max}\NormalTok{(price)}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(year, }\StringTok{`}\DataTypeTok{Lower Limit}\StringTok{`}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{price_tier =} \KeywordTok{c}\NormalTok{(}\StringTok{"Low Priced"}\NormalTok{, }\StringTok{"Medium Priced"}\NormalTok{, }\StringTok{"High Priced"}\NormalTok{)}
+\NormalTok{  ) ->}\StringTok{ }\NormalTok{price_tiers}
+\NormalTok{price_tiers }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{year, }\DataTypeTok{color=}\NormalTok{price_tier, }\DataTypeTok{fill=}\NormalTok{price_tier}
+\NormalTok{))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_ribbon}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{ymax=}\StringTok{`}\DataTypeTok{Upper Limit}\StringTok{`}\NormalTok{, }\DataTypeTok{ymin=}\StringTok{`}\DataTypeTok{Lower Limit}\StringTok{`}\NormalTok{), }\DataTypeTok{alpha=}\FloatTok{0.25}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y=}\NormalTok{Center))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datasets}\OperatorTok{$}\NormalTok{all }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(cluster_name) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}
+    \StringTok{`}\DataTypeTok{Revenue}\StringTok{`}\NormalTok{=}\KeywordTok{sum}\NormalTok{(price}\OperatorTok{*}\NormalTok{qty),}
+    \StringTok{`}\DataTypeTok{Number of Products}\StringTok{`}\NormalTok{ =}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(mstrprodid))}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \StringTok{`}\DataTypeTok{% of Revenue}\StringTok{`}\NormalTok{ =}\StringTok{ }\NormalTok{scales}\OperatorTok{::}\KeywordTok{percent}\NormalTok{(Revenue}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(Revenue)),}
+    \DataTypeTok{Revenue =}\NormalTok{ scales}\OperatorTok{::}\KeywordTok{dollar}\NormalTok{(Revenue)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 4
+##   cluster_name  Revenue      `Number of Products` `% of Revenue`
+##   <chr>         <chr>                       <int> <chr>         
+## 1 High Priced   $33,969,825                   144 19.8%         
+## 2 Low Priced    $10,705,333                   139 6.3%          
+## 3 Medium Priced $126,545,431                  178 73.9%
+\end{verbatim}
+
+\section{Predictive Models}\label{predictive-models}
+
+\subsection{Model 1: Lagged Price and
+Quantity}\label{model-1-lagged-price-and-quantity}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{joined_dataset }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(pid) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(pid, year, week_num) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{last_dqty_bs_all =} \KeywordTok{lag}\NormalTok{(dqty_bs_all),}
+    \DataTypeTok{last_price_all =} \KeywordTok{lag}\NormalTok{(price_all)}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\NormalTok{\{}\KeywordTok{lm}\NormalTok{(}
+\NormalTok{    dqty_bs_all}\OperatorTok{~}\NormalTok{week_num}\OperatorTok{*}\NormalTok{last_dqty_bs_all}\OperatorTok{+}\NormalTok{last_price_all}\OperatorTok{+}\NormalTok{price_all}\OperatorTok{-}\DecValTok{1}\NormalTok{,}
+    \DataTypeTok{data=}\NormalTok{.}
+\NormalTok{  )\} ->}\StringTok{ }\NormalTok{m1}
+
+\NormalTok{broom}\OperatorTok{::}\KeywordTok{glance}\NormalTok{(m1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic   p.value    df logLik    AIC
+## *     <dbl>         <dbl> <dbl>     <dbl>     <dbl> <int>  <dbl>  <dbl>
+## 1    0.0241        0.0238 0.335      105. 2.20e-109     5 -6910. 13831.
+## # ... with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{broom}\OperatorTok{::}\KeywordTok{tidy}\NormalTok{(m1) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}
+  \DataTypeTok{significant=}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.1}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.05}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.01}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.005}\NormalTok{)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 6
+##   term                   estimate std.error statistic  p.value significant
+##   <chr>                     <dbl>     <dbl>     <dbl>    <dbl>       <int>
+## 1 week_num               -4.89e-4  0.000154   -3.18   1.47e- 3           4
+## 2 last_dqty_bs_all       -7.21e-4  0.0134     -0.0537 9.57e- 1           0
+## 3 last_price_all          9.02e-1  0.0486     18.5    3.57e-76           4
+## 4 price_all              -8.76e-1  0.0487    -18.0    8.74e-72           4
+## 5 week_num:last_dqty_bs~ -1.63e-3  0.000494   -3.30   9.53e- 4           4
+\end{verbatim}
+
+\subsection{Model 2: Lagged Price and Quality, and
+clusters}\label{model-2-lagged-price-and-quality-and-clusters}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{joined_dataset }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(pid) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(pid, year, week_num) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{last_dqty_bs_all =} \KeywordTok{lag}\NormalTok{(dqty_bs_all),}
+    \DataTypeTok{last_price_all =} \KeywordTok{lag}\NormalTok{(price_all),}
+    \DataTypeTok{cor_cluster_all=}\KeywordTok{as.character}\NormalTok{(cor_cluster_all),}
+\NormalTok{  ) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\NormalTok{\{}\KeywordTok{lm}\NormalTok{(}
+\NormalTok{    dqty_bs_all}\OperatorTok{~}\NormalTok{week_num}\OperatorTok{+}\NormalTok{last_price_all}\OperatorTok{+}
+\StringTok{        }\NormalTok{last_dqty_bs_all}\OperatorTok{+}\NormalTok{last_price_all}\OperatorTok{+}\NormalTok{price_all}\OperatorTok{+}
+\StringTok{        }\NormalTok{price_tier_all}\OperatorTok{+}\NormalTok{cor_cluster_all,}
+    \DataTypeTok{data=}\NormalTok{.}
+\NormalTok{  )\} ->}\StringTok{ }\NormalTok{m2}
+
+\NormalTok{broom}\OperatorTok{::}\KeywordTok{glance}\NormalTok{(m2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic  p.value    df logLik    AIC
+## *     <dbl>         <dbl> <dbl>     <dbl>    <dbl> <int>  <dbl>  <dbl>
+## 1    0.0230        0.0225 0.335      41.6 4.33e-98    13 -6866. 13760.
+## # ... with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{broom}\OperatorTok{::}\KeywordTok{tidy}\NormalTok{(m2) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}
+  \DataTypeTok{significant=}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.1}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.05}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.01}\NormalTok{)}\OperatorTok{+}\NormalTok{(p.value}\OperatorTok{<}\FloatTok{0.005}\NormalTok{)}
+\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 13 x 6
+##    term                  estimate std.error statistic  p.value significant
+##    <chr>                    <dbl>     <dbl>     <dbl>    <dbl>       <int>
+##  1 (Intercept)            1.31e-1  0.0456        2.88 3.98e- 3           4
+##  2 week_num              -5.93e-4  0.000157     -3.77 1.63e- 4           4
+##  3 last_price_all         9.02e-1  0.0493       18.3  2.49e-74           4
+##  4 last_dqty_bs_all      -4.37e-2  0.00668      -6.54 6.12e-11           4
+##  5 price_all             -9.35e-1  0.0529      -17.7  1.86e-69           4
+##  6 price_tier_allLow Pr~ -4.28e-2  0.0136       -3.15 1.64e- 3           4
+##  7 price_tier_allMedium~ -2.77e-2  0.00636      -4.35 1.36e- 5           4
+##  8 cor_cluster_all2      -4.14e-2  0.0107       -3.88 1.06e- 4           4
+##  9 cor_cluster_all3      -4.08e-2  0.00770      -5.30 1.17e- 7           4
+## 10 cor_cluster_all4      -4.22e-2  0.00717      -5.88 4.23e- 9           4
+## 11 cor_cluster_all5      -4.09e-2  0.00961      -4.26 2.09e- 5           4
+## 12 cor_cluster_all6      -4.10e-2  0.00956      -4.29 1.76e- 5           4
+## 13 cor_cluster_all7      -4.15e-2  0.0140       -2.97 2.96e- 3           4
+\end{verbatim}
+
+
+\end{document}
